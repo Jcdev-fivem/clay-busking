@@ -1,0 +1,351 @@
+/* Same world as clay-banking / clay-garage / clay-vehicleshop / ox_inventory:
+   flat graphite surfaces over the game, one Clay City blue accent, no glow, no backdrop blur.
+   Chakra Petch carries headings and tabular figures, Kanit carries Thai copy. */
+:root {
+  --surface: rgba(13, 15, 19, 0.82);
+  --surface-soft: rgba(13, 15, 19, 0.68);
+  --raise: rgba(255, 255, 255, 0.06);
+  --raise-hover: rgba(255, 255, 255, 0.11);
+  --line: rgba(255, 255, 255, 0.1);
+  --text: #f3f5f8;
+  --muted: #a3acb8;
+  --accent: #1a7fe0;       /* primary button fills (white text 4.6:1) */
+  --accent-hover: #2b8cf0;
+  --accent-text: #6bbcff;  /* accent as text/figures on graphite */
+  --in: #5fd69a;           /* money in / rank 3 */
+  --warn: #ffc53d;         /* gold / rank 1 */
+  --rank-2: #f09d51;       /* bronze-amber / rank 2 */
+  --danger: #ff7a85;
+  --radius: 0.5rem;
+  --gap: 0.8rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --display: 'Chakra Petch', 'Kanit', sans-serif;
+  font-family: 'Kanit', 'Leelawadee UI', sans-serif;
+  font-size: max(12.5px, 1.04vh);
+  color: var(--text);
+  /* no color-scheme here: a dark root makes FiveM paint the NUI iframe opaque while closed */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  user-select: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+form {
+  margin: 0;
+}
+
+kbd {
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.3rem;
+  background: var(--raise);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+
+.display {
+  font-family: var(--display);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Browser preview backdrop matching clay-banking / clay-garage; stays transparent in-game */
+.preview-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 60%, #4a525e 0%, #262b33 55%, #121519 100%);
+  pointer-events: none;
+}
+
+/* Shared Clay City graphite panel */
+.panel {
+  color-scheme: dark;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 1rem 1.2rem 1.1rem;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.bar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.bar-title svg {
+  color: var(--accent-text);
+}
+
+.bar h1,
+.bar h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exit {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.exit:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.label {
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+/* Centered modal layer: transparent over live 3D world like clay-banking / clay-garage */
+.modal-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  color-scheme: dark;
+}
+
+.modal-panel {
+  width: 26.5rem;
+  max-width: 92vw;
+  animation: rise 0.22s var(--ease-out);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0.4;
+    transform: translateY(0.6rem);
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.field > span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.7rem;
+  padding: 0 0.85rem;
+  border-radius: var(--radius);
+  background: var(--raise);
+  border: 1px solid transparent;
+  color: var(--muted);
+  transition: border-color 0.15s;
+}
+
+.input:focus-within {
+  border-color: var(--accent-text);
+}
+
+.input i {
+  font-family: var(--display);
+  font-style: normal;
+  font-weight: 700;
+  color: var(--accent-text);
+}
+
+.input input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: none;
+  border: 0;
+  outline: none;
+  color: var(--text);
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--accent-text);
+  user-select: text;
+}
+
+.input input::placeholder {
+  color: #8b95a2;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0;
+}
+
+.quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.quick button {
+  height: 2.05rem;
+  border-radius: 0.35rem;
+  background: var(--raise);
+  color: var(--muted);
+  font-family: var(--display);
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.quick button:hover:not(:disabled) {
+  background: var(--raise-hover);
+  color: var(--text);
+}
+
+.quick button.on {
+  background: var(--text);
+  color: #0d0f13;
+  font-weight: 700;
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.2rem;
+  margin-top: 0.4rem;
+  font-size: 0.86rem;
+  color: var(--danger);
+}
+
+.notice svg {
+  width: 0.98rem;
+  height: 0.98rem;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.btn {
+  height: 2.7rem;
+  padding: 0 1rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  background: var(--raise);
+  color: var(--text);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--raise-hover);
+}
+
+.btn.primary {
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--accent);
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-panel,
+  .hud-panel {
+    animation: none;
+  }
+}
